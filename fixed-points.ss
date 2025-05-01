@@ -88,8 +88,5 @@
 (define (append-many . lists)
   (fold-right append '() lists))
 
-(define the-points
-  (logistic-fixed-points 3.56 4 0.0001 2000 1500 0.0001))
-
-(display (length the-points))
-(newline)
+; (define the-points
+;   (logistic-fixed-points 3.56 4 0.0001 2000 1500 0.0001))
