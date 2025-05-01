@@ -1,4 +1,4 @@
-#find fixed points of the logistic map
+# Find fixed points of the logistic map
 
 function logistic_fixed_points(r_lower, r_upper, r_step, iterations, tail, tolerance)
     points = []
