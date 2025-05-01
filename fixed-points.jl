@@ -9,8 +9,8 @@ function logistic_fixed_points(r_lower, r_upper, r_step, iterations, tail, toler
             orbit[i] = r * previous * (1 - previous)
         end
         
-        tail_values = orbit[end-tail+1:end]
-        quantised = round.(tail_values ./ tolerance) .* tolerance
+        tail_samples = orbit[end-tail+1:end]
+        quantised = round.(tail_samples ./ tolerance) .* tolerance
         fixed_points = unique(quantised)
 
         for p in fixed_points
