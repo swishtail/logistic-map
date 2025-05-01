@@ -1,30 +1,30 @@
 ;;; Find fixed points of the logistic map
 
 (define (logistic-fixed-points r-lower r-upper r-step iterations tail tolerance)
-  (define (reverse-logistic-list x r n)
-    (let logistic-iter ((counter n)
-                        (result (list x)))
+  (define (reverse-orbit x r n)
+    (let orbit-iter ((counter n)
+                     (result (list x)))
       (if (zero? counter)
           result
-          (logistic-iter (- counter 1)
-                         (cons (* r (car result) (- 1 (car result))) result)))))
+          (orbit-iter (- counter 1)
+                      (cons (* r (car result) (- 1 (car result))) result)))))
 
   (define (quantise x tolerance)
     (* tolerance (round (/ x tolerance))))
 
   (define (fixed-points r iterations tail tolerance)
-    (let fixed-points-iter ((sample-set '())
+    (let fixed-points-iter ((fixed-points-set '())
                             (tail-samples
                              (list-head
-                              (reverse-logistic-list 0.5 r iterations) tail)))
+                              (reverse-orbit 0.5 r iterations) tail)))
       (if (null? tail-samples)
-          sample-set
+          fixed-points-set
           (fixed-points-iter (adjoin-set (quantise (car tail-samples) tolerance)
-                                         sample-set)
+                                         fixed-points-set)
                              (cdr tail-samples)))))
 
-  (define (make-r-entry r sample-set)
-    (cons r (list (tree->list sample-set))))
+  (define (make-r-entry r fixed-points-set)
+    (cons r (list (tree->list fixed-points-set))))
 
   (define (r-list->points r-list)
     (apply append-many
