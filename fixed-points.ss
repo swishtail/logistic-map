@@ -1,45 +1,47 @@
 ;;; Find fixed points of the logistic map
 
 (define (logistic-fixed-points r-lower r-upper r-step iterations tail tolerance)
-  (define (reverse-orbit x r n)
-    (let orbit-iter ((counter n)
-                     (result (list x)))
-      (if (zero? counter)
-          result
-          (orbit-iter (- counter 1)
-                      (cons (* r (car result) (- 1 (car result))) result)))))
-
-  (define (quantise x tolerance)
-    (* tolerance (round (/ x tolerance))))
-
-  (define (fixed-points r iterations tail tolerance)
-    (let fixed-points-iter ((fixed-points-set '())
-                            (tail-samples
-                             (list-head
-                              (reverse-orbit 0.5 r iterations) tail)))
-      (if (null? tail-samples)
-          fixed-points-set
-          (fixed-points-iter (adjoin-set (quantise (car tail-samples) tolerance)
-                                         fixed-points-set)
-                             (cdr tail-samples)))))
-
-  (define (make-r-entry r fixed-points-set)
-    (cons r (list (tree->list fixed-points-set))))
-
-  (define (r-list->points r-list)
-    (apply append-many
-           (map (lambda (r-entry)
-                  (map (lambda (point)
-                         (list (car r-entry) point))
-                       (cadr r-entry)))
-                r-list)))
-
   (let ((r-range (range r-lower r-upper r-step)))
-    (r-list->points
-     (map (lambda (r)
-            (make-r-entry r
-                          (fixed-points r iterations tail tolerance)))
-          r-range))))
+    (fold-right append
+                '()
+                (map (lambda (r) (fixed-points r iterations tail tolerance))
+                     r-range))))
+
+(define (fixed-points r iterations tail tolerance)
+  (map (lambda (point) (list (exact->inexact r) point))
+       (tree->list
+        (fold-right adjoin-set
+                    '()
+                    (map (lambda (sample) (quantise sample tolerance))
+                         (list-head (reverse-orbit r iterations) tail))))))
+
+(define (reverse-orbit r n)
+  (let orbit-iter ((counter n)
+                   (result (list 0.5)))
+    (if (zero? counter)
+        result
+        (orbit-iter (- counter 1)
+                    (cons (* r (car result) (- 1 (car result))) result)))))
+
+(define (quantise x tolerance)
+  (* tolerance (round (/ x tolerance))))
+
+(define (range lower upper step)
+  (if (> lower upper)
+      '()
+      (cons lower (range (+ lower step) upper step))))
+
+(define (list-head x k)
+  (if (zero? k)
+      '()
+      (cons (car x)
+            (list-head (cdr x) (- k 1)))))
+
+(define (fold-right op initial x)
+  (if (null? x)
+      initial
+      (op (car x)
+          (fold-right op initial (cdr x)))))
 
 (define (entry tree) (car tree))
 (define (left-branch tree) (cadr tree))
@@ -67,26 +69,7 @@
                     (left-branch set)
                     (adjoin-set x (right-branch set))))))
 
-(define (range lower upper step)
-  (if (> lower upper)
-      '()
-      (cons lower
-            (range (+ lower step) upper step))))
-
-(define (list-head x k)
-  (if (zero? k)
-      '()
-      (cons (car x)
-            (list-head (cdr x) (- k 1)))))
-
-(define (fold-right op initial x)
-  (if (null? x)
-      initial
-      (op (car x)
-          (fold-right op initial (cdr x)))))
-
-(define (append-many . lists)
-  (fold-right append '() lists))
-
-; (define the-points
-;   (logistic-fixed-points 3.56 4 0.0001 2000 1500 0.0001))
+(display
+ (length
+  (logistic-fixed-points
+   356/100 4 1/10000 2000 1500 1/10000)))
