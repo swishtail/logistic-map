@@ -29,17 +29,17 @@
       '()
       (cons lower (range (+ lower step) upper step))))
 
-(define (list-head x k)
-  (if (zero? k)
-      '()
-      (cons (car x)
-            (list-head (cdr x) (- k 1)))))
-
 (define (fold-right op initial x)
   (if (null? x)
       initial
       (op (car x)
           (fold-right op initial (cdr x)))))
+
+(define (list-head x k)
+  (if (zero? k)
+      '()
+      (cons (car x)
+            (list-head (cdr x) (- k 1)))))
 
 (define (entry tree) (car tree))
 (define (left-branch tree) (cadr tree))
