@@ -36,6 +36,3 @@ ax = Axis(fig[1, 1], limits=(3.8, 3.88, 0.4, 0.6), width=4000, height=3000, back
 scatter!(ax, r_vals, x_vals; color = :white, markersize = 1)
 resize_to_layout!(fig)
 # save("logistic_fixed_points.png", fig; px_per_unit = 1)
-scatter!(ax, r_vals, x_vals; color = :white, markersize = 1)
-resize_to_layout!(fig)
-# save("logistic_fixed_points.png", fig; px_per_unit = 1)
