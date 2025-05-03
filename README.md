@@ -1,4 +1,4 @@
 # logistic-map
-Scheme and Julia code to find fixed points of the logistic map.
+Plotting and rendering of fixed points of the logistic map in Julia, with `CairoMakie.
 
-![plot of the fixed points of the logistic map](logistic_fixed_points.png)
+![Fixed points of the logistic map](logistic_fixed_points.png)
