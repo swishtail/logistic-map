@@ -1,11 +1,10 @@
 ;;; Find fixed points of the logistic map
 
 (define (logistic-fixed-points r-lower r-upper r-step iterations tail tolerance)
-  (let ((r-range (range r-lower r-upper r-step)))
-    (fold-right append
-                '()
-                (map (lambda (r) (fixed-points r iterations tail tolerance))
-                     r-range))))
+  (fold-right append
+              '()
+              (map (lambda (r) (fixed-points r iterations tail tolerance))
+                   (range r-lower r-upper r-step))))
 
 (define (fixed-points r iterations tail tolerance)
   (map (lambda (point) (list (exact->inexact r) point))
@@ -16,8 +15,7 @@
                          (list-head (reverse-orbit r iterations) tail))))))
 
 (define (reverse-orbit r n)
-  (let orbit-iter ((counter n)
-                   (result (list 0.5)))
+  (let orbit-iter ((counter n) (result (list 0.5)))
     (if (zero? counter)
         result
         (orbit-iter (- counter 1)
